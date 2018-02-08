@@ -18,8 +18,8 @@ import {
 export default class Login extends Component {
   render() {
     return (
-      <View style={{flex: 1, flexDirection:"column"}}>
-        <View style={{flex: .3}} />
+      <View style={styles.container}>
+        <View style={styles.login} />
         <Text>User Name:</Text>
         <TextInput />
         <Text>Password:</Text>
@@ -38,18 +38,9 @@ export default class Login extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    flexDirection: 'column',
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+  login: {
+    flex: .3,
+  }
 });
