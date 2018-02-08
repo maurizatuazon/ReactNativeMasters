@@ -14,7 +14,7 @@ import {
   TextInput,
   Alert
 } from 'react-native';
-import Login from './android/app/screens/Login';
+import Login from './app/screens/Login';
 
 export default class App extends Component {
   render() {
