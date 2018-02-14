@@ -14,12 +14,27 @@ import {
   TextInput,
   Alert
 } from 'react-native';
-import Login from './app/screens/Login';
+import { StackNavigator } from 'react-navigation';
+
+import LoginScreen from './app/screens/Login';
+import WelcomeScreen from './app/screens/Welcome';
 
 export default class App extends Component {
   render() {
-    return (
-      <Login />
-    );
+    return <RootStack />;
   }
 }
+
+const RootStack = StackNavigator(
+  {
+    Login: {
+      screen: LoginScreen,
+    },
+    Welcome:{
+      screen: WelcomeScreen,
+    }
+  },
+  {
+    initialRouteName: 'Login',
+  }
+);

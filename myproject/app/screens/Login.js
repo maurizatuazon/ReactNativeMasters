@@ -11,23 +11,29 @@ import {
   Text,
   View,
   Button,
-  TextInput,
-  Alert
+  TextInput
 } from 'react-native';
 
-export default class Login extends Component {
+export default class LoginScreen extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {username: ''};
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <View style={styles.login} />
         <Text>User Name:</Text>
-        <TextInput />
+        <TextInput 
+          onChangeText={(username) => this.setState({username})}
+        />
         <Text>Password:</Text>
         <TextInput />
         <Button 
             title="Login" 
             onPress={() => {
-                Alert.alert("Login", "We are logged in");
+                this.props.navigation.navigate('Welcome', {username: this.state.username});
             }} 
         />
       </View>
