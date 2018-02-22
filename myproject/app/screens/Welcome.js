@@ -19,7 +19,6 @@ export default class WelcomeScreen extends Component {
     this.state = {nickName: '', isShowingNickName:false};
   }
   render() {
-    let display = this.state.isShowingNickName ? 'Welcome ' + this.state.nickName + '!' : ' ';
     let buttonTitle = this.state.isShowingNickName ? 'Hide Welcome' : 'Show Welcome';
 
     return (
@@ -28,9 +27,12 @@ export default class WelcomeScreen extends Component {
         <TextInput 
           onChangeText={(nickName) => this.setState({nickName})}
         />
-        <View style={styles.welcome}>
-          <Text>{display}</Text>
-        </View>  
+        { this.state.isShowingNickName && (
+          <View style={styles.welcome}>
+            <Text>Welcome {this.state.nickName}</Text>
+          </View>  
+        )}
+        <View style={{flex: 1}}/>
         <Button
           title={buttonTitle}
           onPress={() => {this.setState(previousState => {
