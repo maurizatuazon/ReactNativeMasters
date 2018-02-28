@@ -9,21 +9,35 @@ import {
   StyleSheet,
   Button,
   Text,
-  View
+  View,
+  TextInput
 } from 'react-native';
 
 export default class WelcomeScreen extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {nickName: '', isShowingNickName:false};
+  }
   render() {
-    const { params } = this.props.navigation.state;
-    const username = params ? params.username : "guest";
+    let buttonTitle = this.state.isShowingNickName ? 'Hide Welcome' : 'Show Welcome';
 
     return (
       <View style={styles.container}>
-        <View style={styles.welcome} />
-        <Text>Welcome {JSON.stringify(username)}!</Text>
+        <Text>Nickname</Text>
+        <TextInput 
+          onChangeText={(nickName) => this.setState({nickName})}
+        />
+        { this.state.isShowingNickName && (
+          <View style={styles.welcome}>
+            <Text>Welcome {this.state.nickName}</Text>
+          </View>  
+        )}
+        <View style={{flex: 1}}/>
         <Button
-          title="Logout"
-          onPress={() => this.props.navigation.goBack()}
+          title={buttonTitle}
+          onPress={() => {this.setState(previousState => {
+            return { isShowingNickName: !previousState.isShowingNickName };
+          });}}
         />
       </View>
     );

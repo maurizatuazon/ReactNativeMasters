@@ -14,13 +14,17 @@ import {
   TextInput
 } from 'react-native';
 
+import { NavigationActions } from "react-navigation";
+
 export default class LoginScreen extends Component {
+  static navigationOptions = {header: null};
   constructor(props) {
     super(props);
     this.state = {username: ''};
   }
 
   render() {
+    const {navigate} = this.props.navigation;
     return (
       <View style={styles.container}>
         <View style={styles.login} />
@@ -33,8 +37,17 @@ export default class LoginScreen extends Component {
         <Button 
             title="Login" 
             onPress={() => {
-                this.props.navigation.navigate('Welcome', {username: this.state.username});
-            }} 
+              let resetAction = NavigationActions.reset({
+                  index: 0,
+                  actions: [
+                      NavigationActions.navigate({
+                          routeName: "Welcome",
+                          params: { username: this.state.username }
+                      })
+                  ]
+              });
+              this.props.navigation.dispatch(resetAction);
+          }}
         />
       </View>
     );
