@@ -10,35 +10,69 @@ import {
   Button,
   Text,
   View,
-  TextInput
+  TextInput,
+  FlatList,
+  TouchableOpacity,
+  Modal,
+  ScrollView
 } from 'react-native';
+import { NavigationActions } from "react-navigation";
 
 export default class WelcomeScreen extends Component {
+  static navigationOptions = {gesturesEnabled: true};
   constructor(props) {
     super(props);
-    this.state = {nickName: '', isShowingNickName:false};
+    this.state = {isModalVisible:false, students: [] };
   }
-  render() {
-    let buttonTitle = this.state.isShowingNickName ? 'Hide Welcome' : 'Show Welcome';
 
+  componentDidMount() {
+    this.loadData();
+  }
+
+  loadData() {
+    this.setState({
+      students: [
+        {key: 1, firstName:"Mau", lastName: "Tuazon"},
+        {key: 2, firstName:"Nick", lastName: "Clarity"},
+        {key: 3, firstName:"Jennifer", lastName: "Telisczak"},
+        {key: 4, firstName:"Shayne", lastName: "Nieto"},
+        {key: 5, firstName:"Avery", lastName: "Wold"},
+        {key: 6, firstName:"Ricoe", lastName: "Braga"},
+        {key: 7, firstName:"Mark", lastName: "Wilkenson"},
+        {key: 8, firstName:"Thomas", lastName: "Smet"},
+        {key: 9, firstName:"Ashley", lastName: "Proctor"},
+        {key: 10, firstName:"Brad", lastName: "Dean"}
+      ]
+    });
+
+  }
+
+  closeModal() {
+    this.setState({isModalVisible:false});
+
+  }
+
+  render() {
     return (
       <View style={styles.container}>
-        <Text>Nickname</Text>
-        <TextInput 
-          onChangeText={(nickName) => this.setState({nickName})}
+        <FlatList
+          style={styles.listView}
+          data={this.state.students}
+          renderItem={({item}) => 
+            <TouchableOpacity onPress={() => this.setState({isModalVisible:true})}>
+              <Text>{item.firstName} {item.lastName}</Text>
+            </TouchableOpacity>  
+          }
         />
-        { this.state.isShowingNickName && (
-          <View style={styles.welcome}>
-            <Text>Welcome {this.state.nickName}</Text>
-          </View>  
-        )}
-        <View style={{flex: 1}}/>
-        <Button
-          title={buttonTitle}
-          onPress={() => {this.setState(previousState => {
-            return { isShowingNickName: !previousState.isShowingNickName };
-          });}}
-        />
+        {/* modal */}
+        <Modal
+          visible={this.state.isModalVisible}
+          animationType={'fade'}
+          onRequestClose={() => this.closeModal()}>
+          <ScrollView>
+            <Text style={styles.modalContainer}>This is content inside of scrollable modal component</Text>
+          </ScrollView>
+        </Modal>
       </View>
     );
   }
@@ -49,7 +83,15 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
   },  
-  welcome: {
-    flex: .3,
+  listView: {
+    flex: 1,
   },
+  listEntry: {
+    padding: 10,
+    fontSize: 18,
+    height: 44,
+  },
+  modalContainer: {
+    fontSize: 200,
+  }
 });
