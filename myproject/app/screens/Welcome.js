@@ -4,52 +4,58 @@
  * @flow
  */
 
-import React, { Component } from 'react';
-import {
-  StyleSheet,
-  Button,
-  Text,
-  View,
-  TextInput
-} from 'react-native';
+import React from 'react';
+import { FlatList, ActivityIndicator, Text, View, AsyncStorage  } from 'react-native';
 
-export default class WelcomeScreen extends Component {
-  constructor(props) {
+export default class FetchExample extends React.Component {
+
+  constructor(props){
     super(props);
-    this.state = {nickName: '', isShowingNickName:false};
+    this.state ={ isLoading: true}
   }
-  render() {
-    let buttonTitle = this.state.isShowingNickName ? 'Hide Welcome' : 'Show Welcome';
 
-    return (
-      <View style={styles.container}>
-        <Text>Nickname</Text>
-        <TextInput 
-          onChangeText={(nickName) => this.setState({nickName})}
-        />
-        { this.state.isShowingNickName && (
-          <View style={styles.welcome}>
-            <Text>Welcome {this.state.nickName}</Text>
-          </View>  
-        )}
-        <View style={{flex: 1}}/>
-        <Button
-          title={buttonTitle}
-          onPress={() => {this.setState(previousState => {
-            return { isShowingNickName: !previousState.isShowingNickName };
-          });}}
+  componentDidMount(){
+    return fetch('https://launchlibrary.net/1.3/agency')
+      .then(async (response) => response.json())
+      .then(async (responseJson) => {
+        try {
+          await AsyncStorage.setItem('@MyAsyncStorage:key', responseJson.agencies);
+        } catch (error) {
+          console.log('Error saving data');
+        }
+        this.setState({
+          isLoading: false,
+          dataSource: responseJson.agencies,
+        }, function(){
+
+        });
+
+      })
+      .catch((error) =>{
+        console.error(error);
+      });
+  }
+
+
+
+  render(){
+    
+    if(this.state.isLoading){
+      return(
+        <View style={{flex: 1, padding: 20}}>
+          <ActivityIndicator/>
+        </View>
+      )
+    }
+
+    return(
+      <View style={{flex: 1, paddingTop:20}}>
+        <FlatList
+          data={this.state.dataSource}
+          renderItem={({item}) => <Text>{item.name}, {item.abbrev}</Text>}
+          keyExtractor={(item, index) => index}
         />
       </View>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-  },  
-  welcome: {
-    flex: .3,
-  },
-});
