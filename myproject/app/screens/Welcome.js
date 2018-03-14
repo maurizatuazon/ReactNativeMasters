@@ -16,27 +16,19 @@ export default class FetchExample extends React.Component {
 
   componentDidMount(){
     return fetch('https://launchlibrary.net/1.3/agency')
-      .then(async (response) => response.json())
-      .then(async (responseJson) => {
+      .then((response) => response.json())
+      .then((responseJson) => {
         try {
-          await AsyncStorage.setItem('@MyAsyncStorage:key', responseJson.agencies);
+          AsyncStorage.setItem('@MyAsyncStorage:key', JSON.stringify(responseJson.agencies))
+          .then(x => AsyncStorage.getItem('@MyAsyncStorage:key')
+          .then((val) => { 
+            this.setState({ isLoading: false,dataSource: val ? val : {}});
+          }));
         } catch (error) {
-          console.log('Error saving data');
+          
         }
-        this.setState({
-          isLoading: false,
-          dataSource: responseJson.agencies,
-        }, function(){
-
-        });
-
-      })
-      .catch((error) =>{
-        console.error(error);
       });
   }
-
-
 
   render(){
     
@@ -51,7 +43,7 @@ export default class FetchExample extends React.Component {
     return(
       <View style={{flex: 1, paddingTop:20}}>
         <FlatList
-          data={this.state.dataSource}
+          data={JSON.parse(this.state.dataSource)}
           renderItem={({item}) => <Text>{item.name}, {item.abbrev}</Text>}
           keyExtractor={(item, index) => index}
         />
