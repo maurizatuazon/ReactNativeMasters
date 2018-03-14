@@ -19,6 +19,8 @@ import { StackNavigator } from 'react-navigation';
 import LoginScreen from './app/screens/Login';
 import WelcomeScreen from './app/screens/Welcome';
 
+let SQLite = require('react-native-sqlite-storage')
+
 export default class App extends Component {
   render() {
     return <RootStack />;

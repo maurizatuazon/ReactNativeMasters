@@ -23,6 +23,8 @@ export default class FetchExample extends React.Component {
           .then(x => AsyncStorage.getItem('@MyAsyncStorage:key')
           .then((val) => { 
             this.setState({ isLoading: false,dataSource: val ? val : {}});
+
+            SQLite.openDatabase({name: 'my.db', location: 'Library'}, successcb, errorcb);
           }));
         } catch (error) {
           
