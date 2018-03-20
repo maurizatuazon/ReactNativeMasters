@@ -5,7 +5,9 @@
  */
 
 import React from 'react';
-import { FlatList, ActivityIndicator, Text, View, AsyncStorage  } from 'react-native';
+import { Button, FlatList, ActivityIndicator, Text, View, AsyncStorage  } from 'react-native';
+
+import LaunchService from "../services/LaunchService";
 
 export default class FetchExample extends React.Component {
 
@@ -15,20 +17,22 @@ export default class FetchExample extends React.Component {
   }
 
   componentDidMount(){
-    return fetch('https://launchlibrary.net/1.3/agency')
-      .then((response) => response.json())
-      .then((responseJson) => {
-        try {
-          AsyncStorage.setItem('@MyAsyncStorage:key', JSON.stringify(responseJson.agencies))
-          .then(x => AsyncStorage.getItem('@MyAsyncStorage:key')
-          .then((val) => { 
-            this.setState({ isLoading: false,dataSource: val ? val : {}});
+    this.loadData();
+  }
 
-            SQLite.openDatabase({name: 'my.db', location: 'Library'}, successcb, errorcb);
-          }));
-        } catch (error) {
-          
-        }
+  async loadData() {
+    var launchData = await LaunchService.getLaunchesAsync();
+    this.setState({
+        isLoading: false,
+        dataSource: launchData
+    });
+  }
+
+  async loadCacheData() {
+      var launchData = await LaunchService.getCachedLaunchesAsync();
+      this.setState({
+          isLoading: false,
+          dataSource: launchData
       });
   }
 
@@ -44,9 +48,19 @@ export default class FetchExample extends React.Component {
 
     return(
       <View style={{flex: 1, paddingTop:20}}>
+        <Button title="Load from Cache" onPress={async () => {
+                    await this.loadCacheData();
+                }}>
+        </Button>
+        <Button title="Refresh list" onPress={async () => {
+              this.setState({
+                dataSource: JSON.parse('[]')
+              });
+          }}>
+        </Button>
         <FlatList
-          data={JSON.parse(this.state.dataSource)}
-          renderItem={({item}) => <Text>{item.name}, {item.abbrev}</Text>}
+          data={this.state.dataSource}
+          renderItem={({item}) => <Text>{item.name}, {item.windowstart}, {item.windowend}</Text>}
           keyExtractor={(item, index) => index}
         />
       </View>
