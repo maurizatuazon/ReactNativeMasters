@@ -19,11 +19,18 @@ import {
 import { NavigationActions } from "react-navigation";
 
 export default class WelcomeScreen extends Component {
-  static navigationOptions = {gesturesEnabled: true};
-  constructor(props) {
+  static navigationOptions = ({ navigation, screenProps }) => ({
+    title: "Welcome",
+    headerTintColor: "#FFFFFF",
+    headerStyle: styles.headerStyle,
+});
+
+constructor(props) {
     super(props);
-    this.state = {isModalVisible:false, students: [] };
-  }
+    this.state = {
+        students: []
+    };
+}
 
   componentDidMount() {
     this.loadData();
@@ -47,32 +54,25 @@ export default class WelcomeScreen extends Component {
 
   }
 
-  closeModal() {
-    this.setState({isModalVisible:false});
-
-  }
-
   render() {
+    const navigation = this.props.navigation;
     return (
       <View style={styles.container}>
         <FlatList
           style={styles.listView}
           data={this.state.students}
           renderItem={({item}) => 
-            <TouchableOpacity onPress={() => this.setState({isModalVisible:true})}>
+            <TouchableOpacity 
+                onPress={() => {
+                  navigation.navigate("ItemDetails", {
+                      detailItem: item
+                  });
+              }}
+            >
               <Text>{item.firstName} {item.lastName}</Text>
             </TouchableOpacity>  
           }
         />
-        {/* modal */}
-        <Modal
-          visible={this.state.isModalVisible}
-          animationType={'fade'}
-          onRequestClose={() => this.closeModal()}>
-          <ScrollView>
-            <Text style={styles.modalContainer}>This is content inside of scrollable modal component</Text>
-          </ScrollView>
-        </Modal>
       </View>
     );
   }
@@ -86,10 +86,8 @@ const styles = StyleSheet.create({
   listView: {
     flex: 1,
   },
-  listEntry: {
-    padding: 10,
-    fontSize: 18,
-    height: 44,
+  headerStyle: {
+    backgroundColor: "#2196F3"
   },
   modalContainer: {
     fontSize: 200,
