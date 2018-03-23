@@ -18,25 +18,30 @@ import { StackNavigator } from 'react-navigation';
 
 import LoginScreen from './app/screens/Login';
 import WelcomeScreen from './app/screens/Welcome';
+import ItemDetailsScreen from './app/screens/ItemDetails';
 
-let SQLite = require('react-native-sqlite-storage')
+let SQLite = require('react-native-sqlite-storage');
 
 export default class App extends Component {
   render() {
-    return <RootStack />;
+    return <ModalStack />;
   }
 }
 
-const RootStack = StackNavigator(
+const ModalStack = StackNavigator(
   {
     Login: {
       screen: LoginScreen,
     },
     Welcome:{
       screen: WelcomeScreen,
+    },
+    ItemDetails:{
+      screen: ItemDetailsScreen,
     }
   },
   {
     initialRouteName: 'Login',
+    mode: "modal"
   }
 );

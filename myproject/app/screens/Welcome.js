@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { Button, FlatList, ActivityIndicator, Text, View, AsyncStorage  } from 'react-native';
+import { Button, FlatList, ActivityIndicator, Text, View, AsyncStorage, TouchableOpacity  } from 'react-native';
 
 import LaunchService from "../services/LaunchService";
 
@@ -37,7 +37,7 @@ export default class FetchExample extends React.Component {
   }
 
   render(){
-    
+    const navigation = this.props.navigation;
     if(this.state.isLoading){
       return(
         <View style={{flex: 1, padding: 20}}>
@@ -60,8 +60,17 @@ export default class FetchExample extends React.Component {
         </Button>
         <FlatList
           data={this.state.dataSource}
-          renderItem={({item}) => <Text>{item.name}, {item.windowstart}, {item.windowend}</Text>}
-          keyExtractor={(item, index) => index}
+          renderItem={({item}) => 
+            <TouchableOpacity 
+                onPress={() => {
+                  navigation.navigate("ItemDetails", {
+                      detailItem: item
+                  });
+              }}
+            >
+               <Text>{item.name}, {item.windowstart}, {item.windowend}</Text>
+            </TouchableOpacity>  
+          }
         />
       </View>
     );
