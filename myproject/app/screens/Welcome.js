@@ -6,82 +6,82 @@
 
 import React, { Component } from 'react';
 import {
-  AppRegistry,
-  Dimensions,
   StyleSheet,
+  Button,
   Text,
-  TouchableOpacity,
-  View
+  View,
+  TextInput,
+  Image
 } from 'react-native';
-import { RNCamera } from 'react-native-camera';
-import Swiper from 'react-native-swiper';
 
-export default class CameraApp extends React.Component {
+export default class WelcomeScreen extends Component {
+    static navigationOptions = ({ navigation, screenProps }) => ({
+        title: "Welcome",
+        headerTintColor: "#FFFFFF",
+        headerStyle: styles.headerStyle,
+    });
+
+    constructor(props) {
+        super(props);
+        this.state = {nickName: '', isShowingNickName:false, imageUri:''};
+    }
+
+    updateImageUri(newImageUri) {
+        this.setState({
+            imageUri: newImageUri
+        });        
+    }
+
   render() {
+    const navigation = this.props.navigation; 
+    let buttonTitle = this.state.isShowingNickName ? 'Hide Welcome' : 'Show Welcome';
+
     return (
       <View style={styles.container}>
-        <Swiper style={styles.wrapper} showsButtons={true}>
-          <View style={styles.slide1}>
-            <RNCamera
-                ref={ref => {
-                  this.camera = ref;
-                }}
-                style = {styles.preview}
-                type={RNCamera.Constants.Type.back}
-                flashMode={RNCamera.Constants.FlashMode.on}
-                permissionDialogTitle={'Permission to use camera'}
-                permissionDialogMessage={'We need your permission to use your camera phone'}
+        <Text>Nickname</Text>
+        <TextInput 
+          onChangeText={(nickName) => this.setState({nickName})}
+        />
+        { this.state.isShowingNickName && (
+          <View style={styles.welcome}>
+            <Text>Welcome {this.state.nickName}</Text>
+          </View>  
+        )}
+        <Text>Profile Image:</Text>
+        <View>
+            <Image 
+                style={{height: 150, width: 150}}
+                source={{uri: this.state.imageUri}}
             />
-            <View style={{flex: 0, flexDirection: 'row', justifyContent: 'center',}}>
-              <TouchableOpacity
-                  onPress={this.takePicture.bind(this)}
-                  style = {styles.capture}
-              >
-                  <Text style={{fontSize: 14}}> SNAP </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View style={styles.slide2}>
-            <Text style={styles.text}>Beautiful</Text>
-          </View>
-        </Swiper>  
+        </View>
+        <View style={{flex: 1}}/>
+        <Button
+          title={buttonTitle}
+          onPress={() => {this.setState(previousState => {
+            return { isShowingNickName: !previousState.isShowingNickName };
+          });}}
+        />
+        <View>
+        
+        <Button
+            title="Take Picture"
+            onPress={() => {
+                navigation.navigate("Camera", { updateUri: this.updateImageUri.bind(this) });
+            }}
+        />
+        </View>
+        
       </View>
     );
   }
-
-  takePicture = async function() {
-    if (this.camera) {
-      const options = { quality: 0.5, base64: true };
-      const data = await this.camera.takePictureAsync(options)
-      console.log(data.uri);
-    }
-  };
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    backgroundColor: 'black'
-  },
-  capture: {
-    flex: 0,
-    backgroundColor: '#fff',
-    borderRadius: 5,
-    padding: 15,
-    paddingHorizontal: 20,
-    alignSelf: 'center',
-    margin: 20
-  },
-  slide1: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center'
-  },
-  slide2: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#97CAE5',
+  },  
+  welcome: {
+    flex: .3,
   },
 });

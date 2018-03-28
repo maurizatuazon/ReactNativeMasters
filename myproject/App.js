@@ -18,6 +18,7 @@ import { StackNavigator } from 'react-navigation';
 
 import LoginScreen from './app/screens/Login';
 import WelcomeScreen from './app/screens/Welcome';
+import CameraScreen from './app/screens/Camera';
 
 let SQLite = require('react-native-sqlite-storage')
 
@@ -34,6 +35,9 @@ const RootStack = StackNavigator(
     },
     Welcome:{
       screen: WelcomeScreen,
+    },
+    Camera:{
+      screen: CameraScreen,
     }
   },
   {
